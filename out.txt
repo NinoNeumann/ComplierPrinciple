@@ -1,8 +1,27 @@
-int$qd3;
-$qd3=39;
-$qd3=$qd3*$qd3*7;
- if($qd3!=$qd3+1)thenbegin$qd3=$qd3+922;
-$qd3=$qd3+70;
-end;
-else$qd3=$qd3+207;
-while($qd3+3>$qd3)do$qd3=$qd3+4;
+(0 )  (=  , 386  , null , $p   )
+(1 )  (=  , 8    , null , $t   )
+(2 )  (=  , 7    , null , $y772)
+(3 )  (*  , $t   , 6    , tmp0 )
+(4 )  (+  , $p   , 5    , tmp1 )
+(5 )  (*  , tmp0 , tmp1 , tmp2 )
+(6 )  (=  , tmp2 , null , $p   )
+(7 )  (*  , $t   , 2    , tmp3 )
+(8 )  (>= , $y772, tmp3 , tmp4 )
+(9 )  (jnz, tmp4 , null , 11   )
+(10)  (j  , null , null , 16   )
+(11)  (+  , $y772, 4    , tmp5 )
+(12)  (=  , tmp5 , null , $p   )
+(13)  (+  , $y772, 4    , tmp6 )
+(14)  (=  , tmp6 , null , $p   )
+(15)  (j  , null , null , 18   )
+(16)  (*  , $p   , 785  , tmp7 )
+(17)  (=  , tmp7 , null , $p   )
+(18)  (+  , $t   , 6    , tmp8 )
+(19)  (<= , tmp8 , $y772, tmp9 )
+(20)  (jnz, tmp9 , null , 22   )
+(21)  (j  , null , null , 27   )
+(22)  (+  , $y772, 9    , tmp10)
+(23)  (=  , tmp10, null , $t   )
+(24)  (*  , $y772, 69   , tmp11)
+(25)  (=  , tmp11, null , $y772)
+(26)  (j  , null , null , 18   )

@@ -43,7 +43,7 @@ void InitMap() {
 
     for (int i = 14; i <= 19; ++i)mpNum2Name[i] = "logicalOperator";
 
-    for (int i = 20; i <= 21; ++i)mpNum2Name[i] = "seperator";
+    for (int i = 20; i <= 21; ++i)mpNum2Name[i] = "separator";
 
 
 }
@@ -75,6 +75,15 @@ string ConcatReserved(string s, int n) {
     while (IsDigits(str_arrLetters[i]) || IsLetter(str_arrLetters[i])) {
         s = (s + str_arrLetters[i++]).c_str();
         if (IsReserved(s)) {
+            iCur = i;
+            return s;
+//            f = true;
+        }
+    }
+    iCur = i;
+    /*while (IsDigits(str_arrLetters[i]) || IsLetter(str_arrLetters[i])) {
+        s = (s + str_arrLetters[i++]).c_str();
+        if (IsReserved(s)) {
             tmp_i = i;
             tmp = s;
             f = true;
@@ -92,7 +101,7 @@ string ConcatReserved(string s, int n) {
     }
     else {
         iCur = i;
-    }
+    }*/
     return s;
 }
 
@@ -110,7 +119,7 @@ string ConcatIdentifier(string s, int n) {
     int i = n + 1;
     // 对标识符的第二个字符进行判断
     if (!IsLetter(str_arrLetters[i])) {
-        bHaveError = true;
+        iHaveError = 1;
         return s;
     }
     else {
@@ -147,8 +156,8 @@ int JudgeType(string s) {
 
 void Scanner() {
     // Scanner 是负责生成二元式的 一个词法分析程序  每次调用Scanner 都会产生一个二元式
-    // int tmp_f = iHaveError;
-    // iHaveError = false;
+    int tmp_f = iHaveError;
+    iHaveError = 0;
     int ty;
     if (iCur < iFileLength) {
         string s1, s2;
@@ -177,7 +186,7 @@ void Scanner() {
                 wdNextWord.iType = mpName2Num[s2];
             }
             else {
-                iHaveError = 1;
+                iHaveError = 3;
             }
             //else {
             //    // 说明字符串S2不是保留字那就出错
@@ -208,7 +217,7 @@ void Scanner() {
             iCur++;
             break;
         default:
-            iHaveError = 1;
+            iHaveError = 3;
             break;
         }
         // 如果词法分析出错那么就设置报错信息
@@ -217,13 +226,26 @@ void Scanner() {
             wdNextWord.strValue = s2;
             wdNextWord.iType = -1;
             wdNextWord.iLine = iCurLine;
+            ErrorManagement("");
+            //// 自动忽略该单词
+            //cout << depth++ << ":【词法分析】 " << "warning！未知单词 (" << mpNum2Name[wdNextWord.iType] << "," << wdNextWord.strValue << ")" << endl;
 
 
+            //int e = ErrorProcessMatchKeyWord(s2);
+            ///*if (e)
+            //    ErrorManagementAssistant("Lexical warning", " 修正未知单词:" + s2 + "  ->" + wdNextWord.strValue);
+            //else*/
+            //ErrorManagementAssistant("Lexical warning", " 修正未知单词:" + s2 + "  ->" + wdNextWord.strValue);
+            //    //cout << depth++ << ":【词法分析】 " << "已修正未知单词 (" << mpNum2Name[wdNextWord.iType] << "," << wdNextWord.strValue << ")" << endl;
+
+            //iHaveError = tmp_f;
+            ////Scanner();
+            //return;
         }
-
-        cout << depth++ << ":【词法分析】 " << "(" << mpNum2Name[wdNextWord.iType] << "," << wdNextWord.strValue << ")" << endl;
-        //iHaveError = tmp_f;
+        cout <<setw(3)<<setiosflags(ios::left)<< depth++ << ":【词法分析】 :" << "(" << setw(8) << setiosflags(ios::left) << mpNum2Name[wdNextWord.iType] << "," << setw(5) << setiosflags(ios::left) << wdNextWord.strValue << ")" << endl;
+        iHaveError = tmp_f;
 
     }
 
 }
+

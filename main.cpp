@@ -16,36 +16,24 @@
 */
 
 
+
+
 int main() {
     // 读入程序
+    //setfill(' ');
     InitMap();
     char ch;
-    freopen("in.txt", "r", stdin);
+
+    ifstream i_file("in.txt");
+    streambuf* in_file = cin.rdbuf();
+    cin.rdbuf(i_file.rdbuf());
 
     iFileLength = 0;
     // 将程序txt读入到letter buffer中
-    while (~scanf("%c", &ch)) {
+    while (cin>>ch && ch!=EOF) {
         str_arrLetters[iFileLength++] = ch;
-        //if (ch == ',')str_arrLetters[iFileLength++] = " ";
-        //else if(ch==';')str_arrLetters[iFileLength++] = "\n";
     }
-    //// 文件写出
-    //FILE* stream;
-    //if ((stream = freopen("file.txt", "w", stdout)) == NULL)
-    //    exit(-1);
-    //for (int i = 0; i < iFileLength; ++i)printf("%c", str_arrLetters[i].c_str());
-
-    //fflush(stream);
-    //stream = freopen("CON", "w", stdout); //stdout 是向程序的末尾的控制台重定向
-    //printf("And now back to the console once again\n");
-    //// 将输出缓冲区清空
-    freopen("CON", "r", stdin);    // 关闭 将cout的权限重新放回console上
-
-   /* ofstream fout("out.txt");
-    for (int i = 0; i < iFileLength; ++i) {
-        fout<<str_arrLetters[i].c_str();
-    }
-    fout.close();*/
+    cin.rdbuf(in_file);
     
     //
     cout << "File_length: " << iFileLength << endl;
@@ -78,23 +66,17 @@ int main() {
 
     // 语法分析程序部分的main函数
     Scanner();
-    try {
-        ParseProgram();
-    }
-    catch (const char* s) {
-        cout << s << endl;
-        cout << "line: " << wdNextWord.iLine << " have an error!!" << " error message: " << wdNextWord.strValue << " at the " << iCur << "th letter" << endl;
-    }
-    
+    ParseProgram();
 
 
 
+    cout << endl;
     // 输出 标识符table
     cout << "identifier table:";
     map<string, ll>::iterator it;
     for (it = mpIdentifierTable.begin(); it != mpIdentifierTable.end(); it++) {
         string s = it->first;
-        printf("%s %d\n", s.data(), it->second);
+        printf("(int, %s, %d)", s.data(), it->second);
     }
     cout << ";\n";
     // 输出常量table
@@ -108,12 +90,32 @@ int main() {
         cout << stckError.top() << endl;
         stckError.pop();
     }
+    cout << endl;
 
     // 输出四元式
+    
     for (int i = 0; i < qua.size(); ++i) {
-        cout <<"idx:"<<i<<"  "<< qua[i].op << " " << qua[i].arg1 << " " << qua[i].arg2 << " " << qua[i].res << endl;
+        cout <<"("<< setw(2) << setiosflags(ios::left) << i<<")  ("
+            <<setw(3)<<setiosflags(ios::left)<< qua[i].op << ", " 
+            <<setw(5) << setiosflags(ios::left) << qua[i].arg1 << ", " 
+            << setw(5) << setiosflags(ios::left) << qua[i].arg2 << ", " 
+            << setw(5) << setiosflags(ios::left) << qua[i].res <<")" << endl;
+    
+
     }
-   
+
+    // 将四元式输出到文件
+    ofstream outf("out.txt");
+    streambuf* strmBuf = cout.rdbuf();
+    cout.rdbuf(outf.rdbuf());
+    for (int i = 0; i < qua.size(); ++i) {
+        cout << "(" << setw(2) << setiosflags(ios::left) << i << ")  ("
+            << setw(3) << setiosflags(ios::left) << qua[i].op << ", "
+            << setw(5) << setiosflags(ios::left) << qua[i].arg1 << ", "
+            << setw(5) << setiosflags(ios::left) << qua[i].arg2 << ", "
+            << setw(5) << setiosflags(ios::left) << qua[i].res << ")" << endl;
+    }
+    cout.rdbuf(strmBuf);
     system("pause");
     return 0;
 }

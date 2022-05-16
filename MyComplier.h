@@ -11,6 +11,7 @@
 #include <unordered_set>
 #include <iostream>
 #include <vector>
+#include <iomanip>
 using namespace std;
 
 
@@ -81,7 +82,7 @@ struct tmpVar {
     tmpVar(string n,ll v):name(n),value(v) {}
     tmpVar() {
         name = "empty";
-        value = 0;
+        value = -1;
     }
 };
 
@@ -199,8 +200,10 @@ void FixUnknownType();               // 由于这里的架空语句比较简单只有一个类型种
 void PrintMissingSemicolon(string);
 int JudgePhrase(tmpVar, tmpVar, string);
 
-void printUtils(string, const char* );
-void ErrorManagement();
+void printUtils(string);
+bool ErrorManagement(string);
+void ErrorManagementAssistant(string, string);
+int ErrorProcessMatchKeyWord(string);
 
 
 

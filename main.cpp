@@ -78,17 +78,11 @@ int main() {
 
     // 语法分析程序部分的main函数
     Scanner();
-    try {
-        ParseProgram();
-    }
-    catch (const char* s) {
-        cout << s << endl;
-        cout << "line: " << wdNextWord.iLine << " have an error!!" << " error message: " << wdNextWord.strValue << " at the " << iCur << "th letter" << endl;
-    }
-    
+    ParseProgram();
 
 
 
+    cout << endl;
     // 输出 标识符table
     cout << "identifier table:";
     map<string, ll>::iterator it;
@@ -108,6 +102,7 @@ int main() {
         cout << stckError.top() << endl;
         stckError.pop();
     }
+    cout << endl;
 
     // 输出四元式
     for (int i = 0; i < qua.size(); ++i) {

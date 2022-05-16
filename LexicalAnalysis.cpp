@@ -11,14 +11,33 @@
 void Match(string letter,const bool mode = true) {
     // 当Match程序出现错误的时候就会报错 并且wdNextword会暂时停留在错误出现的地方
     if (mode) {
-        if (wdNextWord.strValue != letter)iHaveError = 2;               // 值不匹配  对于分隔符 关键字
+        if (wdNextWord.strValue != letter) {
+            if (mpNum2Name[mpName2Num[letter]] == "separator") {
+                // 如果是分隔符匹配错误报错
+                iHaveError = 5;
+            }
+            else if (mpNum2Name[mpName2Num[letter]] == "keyword") {
+                iHaveError = 6;
+            }
+            else if (mpNum2Name[mpName2Num[letter]] == "mathOperator") {
+                iHaveError = 7;
+            }
+            else if (mpNum2Name[mpName2Num[letter]] == "logicalOperator") {
+                iHaveError = 8;
+            }
+            //iHaveError = 2;
+        }// 值不匹配  对于分隔符 关键字
     }
     else {
-        if (mpNum2Name[wdNextWord.iType]!=letter)iHaveError = 2;        // 类型不匹配  逻辑运算符  标识符
+        if (mpNum2Name[wdNextWord.iType] != letter) {
+            if (letter == "number") {
+                iHaveError = 10;
+            }else{
+                iHaveError = 2;
+            }
+            
+        }       // 类型不匹配  逻辑运算符  标识符
     }
-    //if (bHaveError) {
-    //    throw  letter.c_str();    // 需要在throw error 的时候要不要暂停程序呢?
-    //}
     return;
 }
 
@@ -32,12 +51,13 @@ void ParseProgram() {
     
 
     ParseVariableDeclaration();
+    if(ErrorManagement(""))return;
     Match(";",true);
-    if (bHaveError) {
+    /*if (bHaveError) {
         cout << "【syntax error】: at line:" + to_string(wdNextWord.iLine) + " the " + to_string(iCur) + " th letter; error word: " + wdNextWord.strValue <<"  missing \";\"" << endl;
         stckError.push("【syntax error】: at line:" + to_string(wdNextWord.iLine) + " the " + to_string(iCur) + " th letter; error word: " + wdNextWord.strValue+"  missing \";\"\n");
         bHaveError = false;
-    }
+    }*/
     Scanner();
     ParsePhrasePart();
     
@@ -51,12 +71,11 @@ void ParseVariableDeclaration() {
     // 声明部分需要考虑的出错：声明类型不在类型表里面  由于这边的类型只有int一种所以
 
     Match("变量声明",false);  // 变量说明
-    if (bHaveError) {
-        cout << "【syntax error】: at line:" + to_string(wdNextWord.iLine) + " the " + to_string(iCur) + " th letter; error word: " + wdNextWord.strValue << endl;
-        stckError.push("【syntax error】: at line:"+to_string(wdNextWord.iLine)+" the "+to_string(iCur)+" th letter; error word: "+wdNextWord.strValue+"\n");
-        bHaveError = false;
-        FixUnknownType();
-        //system("pause");
+    if (iHaveError) {
+        ErrorManagementAssistant("lexical warning", "the unknown declaration:  \"" + wdNextWord.strValue + "\"   has been changed to \"int\"");
+        wdNextWord.strValue = "int";
+        wdNextWord.iType = mpName2Num[wdNextWord.strValue];
+        iHaveError = 0;
     }
     string type = wdNextWord.strValue;
     
@@ -70,7 +89,7 @@ void ParsePhrasePart() {
     cout << depth++ << ":【语法推导】 " << ": <语句部分> → <语句>;<语句部分prime>\n";
     ParsePhrase();
     Match(";",true);
-    PrintMissingSemicolon("missing ;");
+    if (ErrorManagement(";"))return;
     Scanner();
     ParsePhrasePart1();
 }
@@ -83,7 +102,7 @@ void ParsePhrasePart1() {
         cout << depth++ << ":【语法推导】 " << ": <语句部分prime> → <语句>;<语句部分prime>\n";
         ParsePhrase();
         Match(";",true);
-        PrintMissingSemicolon("missing ;");
+        if (ErrorManagement(";"))return;
         Scanner();
         ParsePhrasePart1();
     }
@@ -91,6 +110,14 @@ void ParsePhrasePart1() {
         cout << depth++ << ":【语法推导】 " << ": <语句部分prime> → <空串>\n";
         // do nothing
     }
+    //else if(wdNextWord.strValue==";") {
+    //    cout << depth++ << ":【语法推导】 " << ": <语句部分prime> → <空串>\n";
+    //    // do nothing
+    //}
+    //else {
+    //    iHaveError = 11;
+    //    ErrorManagement("");
+    //}
     return;
 }
 
@@ -105,11 +132,28 @@ void ParseIdentifiersList(string type) {
 
 
     //Scanner();
-    Match("identifier",false);
-    if (bHaveError) {
-        PrintMissingSemicolon(" not an identifier!");
+    Match("identifier", false);
+    if (iHaveError) {
+        ErrorManagementAssistant("lexical error", " the illegal identifier:" + wdNextWord.strValue);
         Scanner();
-        return;
+        if (wdNextWord.strValue == ",") {
+            Scanner();
+            if (wdNextWord.iType != mpName2Num["identifier"]) {
+                iHaveError = 4;  // 语法错误
+                return;
+            }
+        }
+        else {
+            if (wdNextWord.strValue == ";") {
+                return;
+            }
+            else {
+                iHaveError = 4;
+                ErrorManagementAssistant("syntax error", " the bad identifier please check!  identifier:" + wdNextWord.strValue);
+                return;
+            }
+        }
+        iHaveError = 0;
     }
     UpdateIdentifierList(type);
     Scanner();
@@ -126,21 +170,41 @@ void ParseIdentifiersList1(string type) {
     if (wdNextWord.iType == mpName2Num[","]) {
          cout << depth++ << ":【语法推导】 " << ": <标识符列表prime> → <标识符>,<标识符列表prime>\n";
          Match(",",true);
-         PrintMissingSemicolon("missing ,");
+         //PrintMissingSemicolon("missing ,");
          Scanner();
          Match("identifier",false);
-         if (bHaveError) {
-             PrintMissingSemicolon(" not an identifier!");
+         if (iHaveError) {
+             ErrorManagementAssistant("lexical error", " the illegal identifier:" + wdNextWord.strValue);
              Scanner();
-             return;
+             if (wdNextWord.strValue == ",") {
+                 Scanner();
+                 if (wdNextWord.iType != mpName2Num["identifier"]) {
+                     iHaveError = 4;  // 语法错误
+                     return;
+                 }
+             }
+             else {
+                 if (wdNextWord.strValue == ";") {
+                     return;
+                 }
+                 else {
+                     iHaveError = 4;
+                     ErrorManagementAssistant("syntax error", " the bad identifier please check!  identifier:"+wdNextWord.strValue);
+                     return;
+                 }
+             }
+             iHaveError = 0;
+             
          }
          UpdateIdentifierList(type);
          Scanner();
          ParseIdentifiersList1(type);
     }
-    else if (wdNextWord.iType == mpName2Num["identifier"]) {
-        bHaveError = true;
-        PrintMissingSemicolon("missing ,");
+    else if (wdNextWord.iType != mpName2Num[";"]) {   // 标识符列表部分缺少","   原来：wdNextWord.iType == mpName2Num["identifier"]
+        iHaveError = 2;                                 // 语法错误
+        //PrintMissingSemicolon("missing ,");
+        ErrorManagement(",");
+
     }
     else if(wdNextWord.iType == mpName2Num[";"]) {
         cout << depth++ << ":【语法推导】 " << ": <标识符列表1> → <空串>\n";
@@ -166,6 +230,10 @@ void ParsePhrase() {
         cout << depth++ << ":【语法推导】 " << ": <语句> → <循环语句>\n";
         ParseLoopPhrase();
     }
+    else if (iCur!=iFileLength) {
+        iHaveError = 11;
+        ErrorManagement("");
+    }
     return;
 }
 
@@ -179,7 +247,7 @@ void ParseAssignmentPhrase() {
     string tVar = wdNextWord.strValue;
     Scanner();
     Match("=",true);
-    PrintMissingSemicolon("missing  =");
+    //PrintMissingSemicolon("missing  =");
     Scanner();
     tmpVar arg1 = ParseExpressionPhrase();
     qua.push_back(quaternary("=", arg1.name, "null", tVar));
@@ -244,13 +312,15 @@ tmpVar ParseItem1(tmpVar arg) {
     if (wdNextWord.strValue == "*") {
         cout << depth++ << ":【语法推导】 " << ": <项prime> → <乘法运算符><因子><项prime>\n";
         Match("*",true);
+        if (ErrorManagement("*"))return ret;
         Scanner();
         tmpVar arg2 = ParseFactor();
-        if (bHaveError) {
+        /*if (bHaveError) {
             cout << "【syntax error】: at line:" + to_string(wdNextWord.iLine) + " the " + to_string(iCur) + " th letter; error word: " + wdNextWord.strValue +" 因子为空串 * 后面缺乏因子 " << endl;
             stckError.push("【syntax error】: at line:" + to_string(wdNextWord.iLine) + " the " + to_string(iCur) + " th letter; error word: " + wdNextWord.strValue + "因子为空串 * 后面缺乏因子\n");
             bHaveError = false;
-        }
+        }*/
+        ErrorManagement(" 解析因子时出错。");
         string var_name = "tmp" + to_string(tmpVarNum++);
 
         qua.push_back(quaternary("*", arg.name, arg2.name, var_name));
@@ -275,6 +345,11 @@ tmpVar ParseFactor() {
         cout << depth++ << ":【语法推导】 " << ": <因子> → <标识符>\n";
         Match("identifier",false);
         if (!CheckIdentifierExist())return ret;
+        if (mpIdentifierTable[wdNextWord.strValue] == -1) {
+            iHaveError = 13;
+            ErrorManagement("");
+            return ret;
+        }
         ret.name = wdNextWord.strValue;
         ret.value = mpIdentifierTable[wdNextWord.strValue];             // 解析因子的子程序中来判断该标识符是否有初始值。
         Scanner();
@@ -283,29 +358,28 @@ tmpVar ParseFactor() {
     else if (wdNextWord.iType == mpName2Num["number"]) {
         cout << depth++ << ":【语法推导】 " << ": <因子> → <常量>\n";
         Match("number",false);
-        if (bHaveError) {
+        /*if (iHaveError) {
             PrintMissingSemicolon("the number is unregualr!");
+            ErrorManagementAssistant("")
             return ret;
-        }
+        }*/
         ret.name = wdNextWord.strValue;
-        ret.value = stoll(ret.name);
-       
+        ret.value = iHaveError ? -1:stoll(ret.name);
+        if(ErrorManagement("number"))return ret;
         Scanner();
     }
     else if (wdNextWord.strValue == "(") {
         cout << depth++ << ":【语法推导】 " << ": <因子> → (<表达式>)\n";
         Match("(",true);
+        if (ErrorManagement("("))return ret;
         Scanner();
         ret = ParseExpressionPhrase();
         Match(")",true);
-        PrintMissingSemicolon("missing  )");
+        if (ErrorManagement(")"))return ret;
         Scanner();
     }
     else {
-        //cout << depth++ << ":【syntax error】 " << ": <因子> → <空串>  因子不能为空串\n";
-        //bHaveError = true;      // 因子不能为空串
-        PrintMissingSemicolon("<因子> → <空串>  因子不能为空串");
-
+        ErrorManagementAssistant("syntax  error", "  因子不能为空串");
     }
     return ret;
 }
@@ -319,8 +393,10 @@ void ParseConditionPhrase() {
 
 
     Match("if",true);
+    if (ErrorManagement("if"))return;
     Scanner();
     Match("(", true);
+    if (ErrorManagement("("))return;
     Scanner();
     tmpVar arg1 = ParseCondition();
     qua.push_back(quaternary("jnz", arg1.name, "null", to_string(qua.size()-1 + 3))); // 产生真出口的语句
@@ -328,16 +404,20 @@ void ParseConditionPhrase() {
     qua.push_back(quaternary("j", "null", "null", "待定"));                         // 产生假出口的跳转语句
   
     Match(")", true);
+    if (ErrorManagement(")"))return;
     Scanner();
     Match("then", true);
+    if (ErrorManagement("then"))return;
     Scanner();
     ParseNestedPhrase();
     int falseExitIndex2 = qua.size();
     qua.push_back(quaternary("j", "null", "null", "0"));
     qua[falseExitIndex1].res = to_string(qua.size());
     Match(";", true);
+    if (ErrorManagement(";"))return;
     Scanner();
     Match("else", true);
+    if (ErrorManagement("else"))return;
     Scanner();
     ParseNestedPhrase();
     qua[falseExitIndex2].res = to_string(qua.size());
@@ -372,19 +452,17 @@ tmpVar ParseCondition() {
 void ParseNestedPhrase() {
 
     // 需要找到语句的首符集
-    if (wdNextWord.iType == mpName2Num["identifier"] ||
-        (wdNextWord.iType == mpName2Num["if"] && wdNextWord.strValue == "if") || 
-        (wdNextWord.iType == mpName2Num["while"] && wdNextWord.strValue == "while")) {
+    if (wdNextWord.iType == mpName2Num["identifier"] || (wdNextWord.strValue == "if") || (wdNextWord.strValue == "while")) {
         cout << depth++ << ":【语法推导】 " << ": <嵌套语句> → <语句>\n";
         ParsePhrase();
     }
-    else if (wdNextWord.iType == mpName2Num["begin"] && wdNextWord.strValue == "begin") {
+    else if (wdNextWord.strValue == "begin") {
         cout << depth++ << ":【语法推导】 " << ": <嵌套语句> → <复合语句>\n";
         ParseMultiPhrase();
     }
     else {
-        // Missing Keyword
-        PrintMissingSemicolon("an error occur  when  parsing NestedPhrase  missing  keyword");
+        iHaveError = 9;
+        ErrorManagement("");
     }
 }
 
@@ -393,11 +471,11 @@ void ParseMultiPhrase() {
     cout << depth++ << ":【语法推导】 " << ": <复合语句> → begin <语句部分> end\n";
 
     Match("begin", true);
-    PrintMissingSemicolon("missing begin");
+    if (ErrorManagement("begin"))return;
     Scanner();
     ParsePhrasePart();
     Match("end", true);
-    PrintMissingSemicolon("missing end");
+    if (ErrorManagement("end"))return;
     Scanner();
 
 }
@@ -408,8 +486,10 @@ void ParseLoopPhrase() {
     cout << depth++ << ":【语法推导】 " << ": <循环语句> → while （<条件>） do <嵌套语句>\n";
  
     Match("while", true);
+    if (ErrorManagement("while"))return;
     Scanner();
     Match("(");
+    if (ErrorManagement("("))return;
     Scanner();
     int conIdx = qua.size();
     tmpVar arg = ParseCondition();
@@ -418,10 +498,13 @@ void ParseLoopPhrase() {
     int falseExitIndex = qua.size();
     qua.push_back(quaternary("j", "null", "null", "0"));
     Match(")");
+    if (ErrorManagement(")"))return;
     Scanner();
     Match("do");
+    if (ErrorManagement("do"))return;
     Scanner();
     ParseNestedPhrase();
+    
     qua.push_back(quaternary("j", "null", "null", to_string(conIdx)));
     qua[falseExitIndex].res = to_string(qua.size());
 

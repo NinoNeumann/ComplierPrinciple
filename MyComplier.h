@@ -81,7 +81,7 @@ struct tmpVar {
     tmpVar(string n,ll v):name(n),value(v) {}
     tmpVar() {
         name = "empty";
-        value = 0;
+        value = -1;
     }
 };
 
@@ -200,7 +200,9 @@ void PrintMissingSemicolon(string);
 int JudgePhrase(tmpVar, tmpVar, string);
 
 void printUtils(string, const char* );
-void ErrorManagement();
+bool ErrorManagement(string);
+void ErrorManagementAssistant(string, string);
+int ErrorProcessMatchKeyWord(string);
 
 
 

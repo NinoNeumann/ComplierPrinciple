@@ -1,0 +1,1 @@
+int$qbe,$shni;$shni=29;$shni=9; if($shni+537>$shni*23)thenbegin$qbe=$qbe*3;$qbe=$qbe*3;end;elsebegin$qbe=$qbe*476;$shni=$qbe*8;end;while($qbe>$shni+6)dobegin$qbe=$qbe+65;$shni=$qbe+921;end;

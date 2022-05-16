@@ -1,0 +1,8 @@
+int$qd3;
+$qd3=39;
+$qd3=$qd3*$qd3*7;
+ if($qd3!=$qd3+1)thenbegin$qd3=$qd3+922;
+$qd3=$qd3+70;
+end;
+else$qd3=$qd3+207;
+while($qd3+3>$qd3)do$qd3=$qd3+4;

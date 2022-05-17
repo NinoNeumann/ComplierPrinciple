@@ -230,6 +230,12 @@ void Scanner() {
             //// 自动忽略该单词
             //cout << depth++ << ":【词法分析】 " << "warning！未知单词 (" << mpNum2Name[wdNextWord.iType] << "," << wdNextWord.strValue << ")" << endl;
 
+            //int e = ErrorProcessMatchKeyWord(s2);
+            ///*if (e)
+            //    ErrorManagementAssistant("Lexical warning", " 修正未知单词:" + s2 + "  ->" + wdNextWord.strValue);
+            //else*/
+            //ErrorManagementAssistant("Lexical warning", " 修正未知单词:" + s2 + "  ->" + wdNextWord.strValue);
+            //    //cout << depth++ << ":【词法分析】 " << "已修正未知单词 (" << mpNum2Name[wdNextWord.iType] << "," << wdNextWord.strValue << ")" << endl;
 
             //int e = ErrorProcessMatchKeyWord(s2);
             ///*if (e)

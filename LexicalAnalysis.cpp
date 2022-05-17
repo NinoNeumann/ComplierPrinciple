@@ -111,6 +111,14 @@ void ParsePhrasePart1() {
         printUtils(":【语法推导】 : <语句部分prime> → <空串>");
         // do nothing
     }
+    //else if(wdNextWord.strValue==";") {
+    //    cout << depth++ << ":【语法推导】 " << ": <语句部分prime> → <空串>\n";
+    //    // do nothing
+    //}
+    //else {
+    //    iHaveError = 11;
+    //    ErrorManagement("");
+    //}
     return;
 }
 
@@ -444,10 +452,12 @@ void ParseNestedPhrase() {
     // 需要找到语句的首符集
     if (wdNextWord.iType == mpName2Num["identifier"] || (wdNextWord.strValue == "if") || (wdNextWord.strValue == "while")) {
         printUtils(":【语法推导】 : <嵌套语句> → <语句>");
-        ParsePhrase();
-    }
+        (wdNextWord.iType == mpName2Num["while"] && wdNextWord.strValue == "while")) {
+        cout << depth++ << ":【语法推导】 " << ": <嵌套语句> → <语句>\n";
     else if (wdNextWord.strValue == "begin") {
         printUtils(":【语法推导】 : <嵌套语句> → <复合语句>");
+    else if (wdNextWord.iType == mpName2Num["begin"] && wdNextWord.strValue == "begin") {
+        cout << depth++ << ":【语法推导】 " << ": <嵌套语句> → <复合语句>\n";
         ParseMultiPhrase();
     }
     else {

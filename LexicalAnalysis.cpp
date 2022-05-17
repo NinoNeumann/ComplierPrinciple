@@ -452,12 +452,10 @@ void ParseNestedPhrase() {
     // 需要找到语句的首符集
     if (wdNextWord.iType == mpName2Num["identifier"] || (wdNextWord.strValue == "if") || (wdNextWord.strValue == "while")) {
         printUtils(":【语法推导】 : <嵌套语句> → <语句>");
-        (wdNextWord.iType == mpName2Num["while"] && wdNextWord.strValue == "while")) {
-        cout << depth++ << ":【语法推导】 " << ": <嵌套语句> → <语句>\n";
+        ParsePhrase();
+    }
     else if (wdNextWord.strValue == "begin") {
         printUtils(":【语法推导】 : <嵌套语句> → <复合语句>");
-    else if (wdNextWord.iType == mpName2Num["begin"] && wdNextWord.strValue == "begin") {
-        cout << depth++ << ":【语法推导】 " << ": <嵌套语句> → <复合语句>\n";
         ParseMultiPhrase();
     }
     else {

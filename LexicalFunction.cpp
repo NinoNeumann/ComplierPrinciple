@@ -81,27 +81,6 @@ string ConcatReserved(string s, int n) {
         }
     }
     iCur = i;
-    /*while (IsDigits(str_arrLetters[i]) || IsLetter(str_arrLetters[i])) {
-        s = (s + str_arrLetters[i++]).c_str();
-        if (IsReserved(s)) {
-            tmp_i = i;
-            tmp = s;
-            f = true;
-        }
-    }
-    if (f) {
-        if (tmp != "int") {
-            s = tmp;
-            iCur = tmp_i;
-        }
-        else {
-            iCur = i;
-        }
-
-    }
-    else {
-        iCur = i;
-    }*/
     return s;
 }
 
@@ -227,26 +206,6 @@ void Scanner() {
             wdNextWord.iType = -1;
             wdNextWord.iLine = iCurLine;
             ErrorManagement("");
-            //// 自动忽略该单词
-            //cout << depth++ << ":【词法分析】 " << "warning！未知单词 (" << mpNum2Name[wdNextWord.iType] << "," << wdNextWord.strValue << ")" << endl;
-
-            //int e = ErrorProcessMatchKeyWord(s2);
-            ///*if (e)
-            //    ErrorManagementAssistant("Lexical warning", " 修正未知单词:" + s2 + "  ->" + wdNextWord.strValue);
-            //else*/
-            //ErrorManagementAssistant("Lexical warning", " 修正未知单词:" + s2 + "  ->" + wdNextWord.strValue);
-            //    //cout << depth++ << ":【词法分析】 " << "已修正未知单词 (" << mpNum2Name[wdNextWord.iType] << "," << wdNextWord.strValue << ")" << endl;
-
-            //int e = ErrorProcessMatchKeyWord(s2);
-            ///*if (e)
-            //    ErrorManagementAssistant("Lexical warning", " 修正未知单词:" + s2 + "  ->" + wdNextWord.strValue);
-            //else*/
-            //ErrorManagementAssistant("Lexical warning", " 修正未知单词:" + s2 + "  ->" + wdNextWord.strValue);
-            //    //cout << depth++ << ":【词法分析】 " << "已修正未知单词 (" << mpNum2Name[wdNextWord.iType] << "," << wdNextWord.strValue << ")" << endl;
-
-            //iHaveError = tmp_f;
-            ////Scanner();
-            //return;
         }
         cout <<setw(3)<<setiosflags(ios::left)<< depth++ << ":【词法分析】 :" << "(" << setw(8) << setiosflags(ios::left) << mpNum2Name[wdNextWord.iType] << "," << setw(5) << setiosflags(ios::left) << wdNextWord.strValue << ")" << endl;
         iHaveError = tmp_f;

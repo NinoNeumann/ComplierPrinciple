@@ -107,7 +107,7 @@ bool ErrorManagement(string str) {
         ErrorManagementAssistant("syntax  error", "  Missing separator:" + str);
         break;
     case 6:
-        ErrorManagementAssistant("syntax  error", "  Missing keyword:" + str);
+        ErrorManagementAssistant("syntax  error", "  Missing keyword: \"" + str+"\"  but get \""+wdNextWord.strValue+"\" instead");
         break;
     case 7:
         ErrorManagementAssistant("syntax  error", "  Missing mathOperator:" + str);
@@ -181,4 +181,18 @@ int ErrorProcessMatchKeyWord(string str) {
     // 如果都不是的话直接跳过这个单词
     Scanner();
     return 0;
+}
+
+
+
+void Anstyle() {
+    if (wdNextWord.strValue == "int") {
+        cpy_f += wdNextWord.strValue + " ";
+    }
+    else if (wdNextWord.strValue == ";") {
+         cpy_f+= "\n";
+        for (int i = 0; i < sj;++i) {
+            cpy_f += "\t";
+        }
+    }
 }

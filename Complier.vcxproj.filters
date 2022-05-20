@@ -40,6 +40,9 @@
     <Text Include="in.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="out.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md">

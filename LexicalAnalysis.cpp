@@ -61,6 +61,13 @@ void ParseProgram() {
     }*/
     Scanner();
     ParsePhrasePart();
+    map<string, ll>::iterator it;
+    for (it = mpIdentifierTable.begin(); it != mpIdentifierTable.end(); it++) {
+        string s = it->first;
+        if (mpIdentifierTable[s] == -1) {
+            ErrorManagementAssistant("syntax  error", "  the uninitiated identifier :" + s);
+        }
+    }
     
 }                // 解析程序部分
 
@@ -91,6 +98,7 @@ void ParsePhrasePart() {
     ParsePhrase();
     Match(";",true);
     if (ErrorManagement(";"))return;
+
     Scanner();
     ParsePhrasePart1();
 }
@@ -111,19 +119,8 @@ void ParsePhrasePart1() {
         printUtils(":【语法推导】 : <语句部分prime> → <空串>");
         // do nothing
     }
-    //else if(wdNextWord.strValue==";") {
-    //    cout << depth++ << ":【语法推导】 " << ": <语句部分prime> → <空串>\n";
-    //    // do nothing
-    //}
-    //else {
-    //    iHaveError = 11;
-    //    ErrorManagement("");
-    //}
     return;
 }
-
-
-
 
 
 
@@ -132,6 +129,7 @@ void ParseIdentifiersList(string type) {
     printUtils(":【语法推导】 : <标识符列表> → <标识符><标识符列表prime>");
     //Scanner();
     Match("identifier", false);
+
     if (iHaveError) {
         ErrorManagementAssistant("lexical error", " the illegal identifier:" + wdNextWord.strValue);
         Scanner();
@@ -222,13 +220,16 @@ void ParsePhrase() {
         ParseAssignmentPhrase();
     }
     else if (wdNextWord.strValue == "if") {
-        
+        sj++;
         printUtils(":【语法推导】 : <语句> → <条件语句>");
         ParseConditionPhrase();
+        sj--;
     }
     else if (wdNextWord.strValue == "while") {
+        sj++;
         printUtils(":【语法推导】 : <语句> → <循环语句>");
         ParseLoopPhrase();
+        sj--;
     }
     else if (iCur!=iFileLength) {
         iHaveError = 11;
@@ -246,16 +247,11 @@ void ParseAssignmentPhrase() {
     string tVar = wdNextWord.strValue;
     Scanner();
     Match("=",true);
-    //PrintMissingSemicolon("missing  =");
     Scanner();
     tmpVar arg1 = ParseExpressionPhrase();
     qua.push_back(quaternary("=", arg1.name, "null", tVar));
-
     // 更新标识符列表操作
     mpIdentifierTable[tVar] = arg1.value;
-
-
-
     cout << "标识符列表更新成功  赋值语句" << "  id:" << tVar << "  value:" << arg1.value << endl;
 
 }
@@ -430,6 +426,10 @@ tmpVar ParseCondition() {
     //int expressionIdx = qua.size();
     tmpVar arg1 = ParseExpressionPhrase();
     Match("logicalOperator",false);
+    if (iHaveError) {
+        ErrorManagementAssistant("syntax  error", "  logicalOperator error!!" + wdNextWord.strValue);
+        return ret;
+    }
     string tVar = wdNextWord.strValue;
     Scanner();
     tmpVar arg2 = ParseExpressionPhrase();

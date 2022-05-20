@@ -17,6 +17,9 @@
 
 
 
+int sj;
+string cpy_f;
+
 
 int main() {
     // 读入程序
@@ -32,6 +35,7 @@ int main() {
     // 将程序txt读入到letter buffer中
     while (cin>>ch && ch!=EOF) {
         str_arrLetters[iFileLength++] = ch;
+        
     }
     cin.rdbuf(in_file);
     
@@ -41,27 +45,51 @@ int main() {
     iCurLine = 1;
 
 
-    // 词法分析程序的main函数部分
+    //int sj = 0;
+    ////// 词法分析程序的main函数部分
     //while (iCur != iFileLength) {
-    //    try {
-    //        Scanner();
-    //    }
-    //    catch(const char *s){
-    //        cout << s << endl;
-    //        cout<< "line: " << wdNextWord.iLine << " have an error!!" << " error message: " << wdNextWord.strValue << " at the " << iCur << "th letter" << endl;
-    //        bHaveError = false;
-    //    }
     //    
-    //    // 这里是词法分析中如果出现错误的报错处理
-    //    /*if (bHaveError) {
-    //        cout <<"line: "<< wdNextWord.iLine << " have an error!!"<<" error message: "<< wdNextWord.strValue<<" at the "<<iCur<<"th letter"<<endl;
-    //    }
-    //    bHaveError = false;*/
-    //    
-    //    // 输出词法分析过程中出现的二元式
-    //    cout <<"(" << mpNum2Name[wdNextWord.iType] << "," << wdNextWord.strValue << ")" << endl;
-    //}
+    //     Scanner();
+    //     string str = wdNextWord.strValue;
+    //     if (str == "then" || str == "do" || str == "begin") {
+    //         sj.push(str);
+    //         cpy_f = cpy_f.substr(0, cpy_f.length() - 1);
+    //         cpy_f = cpy_f + str + "\n";
+    //         for (int i = 0; i < sj.size(); ++i) {
+    //             cpy_f = cpy_f + "\t";
+    //         }
+    //     }
+    //     else if (str == "end" || str == "else") {
+    //         sj.pop();
+    //         cpy_f = cpy_f.substr(0,cpy_f.length()-1);
+    //         cpy_f = cpy_f + str + "\n";
+    //         for (int i = 0; i < sj.size(); ++i) {
+    //             cpy_f = cpy_f + "\t";
+    //         }
+
+    //     }
+    //     else if (str == ";" && (!sj.empty()  &&  sj.top() == "do" )) {
+    //         sj.pop();
+    //         cpy_f = cpy_f + str + "\n";
+    //         for (int i = 0; i < sj.size(); ++i) {
+    //             cpy_f = cpy_f + "\t";
+    //         }
+    //     }
+    //     else if (str == ";") {
+    //         cpy_f = cpy_f + str + "\n";
+    //         for (int i = 0; i < sj.size(); ++i) {
+    //             cpy_f = cpy_f + "\t";
+    //         }
+    //     }
+    //     //Anstyle(str, sj.size());
+    //     cpy_f = cpy_f + str;
     // 
+    //}
+
+    //iCur = 0;
+    //// 
+
+    //cout << cpy_f << endl;
     
 
     // 语法分析程序部分的main函数
@@ -86,22 +114,29 @@ int main() {
     }
     cout << ";\n";
     // 报错处理
+    if(!stckError.empty())
+        cout << "===============================Error Messages==============================" << endl<<endl;
     while (!stckError.empty()) {
+        if (stckError.top().find("warning") != stckError.top().npos) {
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN);
+        }
+        else {
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED);
+        }
         cout << stckError.top() << endl;
         stckError.pop();
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
     }
-    cout << endl;
+    cout << endl<<endl;
 
     // 输出四元式
-    
+    cout << "=======================================quaternaries====================================" << endl<< endl;
     for (int i = 0; i < qua.size(); ++i) {
         cout <<"("<< setw(2) << setiosflags(ios::left) << i<<")  ("
             <<setw(3)<<setiosflags(ios::left)<< qua[i].op << ", " 
             <<setw(5) << setiosflags(ios::left) << qua[i].arg1 << ", " 
             << setw(5) << setiosflags(ios::left) << qua[i].arg2 << ", " 
             << setw(5) << setiosflags(ios::left) << qua[i].res <<")" << endl;
-    
-
     }
 
     // 将四元式输出到文件

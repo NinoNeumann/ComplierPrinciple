@@ -122,6 +122,8 @@ extern vector<quaternary> qua;
 extern int tmpVarNum;
 extern map<string, int> mpTmpVar;   // ø…“‘decrapty
 extern int falseExit, trueExit;
+extern int sj;
+extern string cpy_f;
 
 
 
@@ -204,6 +206,9 @@ void printUtils(string);
 bool ErrorManagement(string);
 void ErrorManagementAssistant(string, string);
 int ErrorProcessMatchKeyWord(string);
+
+
+void Anstyle();
 
 
 

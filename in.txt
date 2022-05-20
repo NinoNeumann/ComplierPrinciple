@@ -1,1 +1,1 @@
-int$p,$t,$y772;$p=386;$t=8;$y772=7;$p=$t*6*($p+5);if($y772>=$t*2)thenbegin$p=$y772+4;$p=$y772+4;end;else$p=$p*785;while($t+6<=$y772)dobegin$t=$y772+9;$y772=$y772*69;end;
+int$j,$b;$n=2;$j=5;$b=8;$n=806+($j*973)*$j*($b+418)+9+866*($b+2)*$j*9+5+$b*$b*$b*$n;while($b*2==$b)do$j=$n*7; if($j+576!=$j)thenbegin$j=$j*961;$j=$j+376;elsebegin$b=$j*171;$j=$j*7;end;
